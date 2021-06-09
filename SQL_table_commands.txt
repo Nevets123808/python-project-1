@@ -1,0 +1,33 @@
+CREATE TABLE owners(
+owner_id INT AUTO_INCREMENT,
+name VARCHAR(50) NOT NULL,
+aboard_ship_id INT,
+money INT DEFAULT="0",
+PRIMARY KEY(owner_id)
+);
+
+CREATE TABLE cities(
+city_id INT AUTO_INCREMENT,
+name VARCHAR(50) NOT NULL,
+PRIMARY KEY(city_id)
+);
+
+CREATE TABLE routes(
+route_id INT AUTO_INCREMENT,
+departing_id INT NOT NULL,
+destination_id INT,
+length INT,
+PRIMARY KEY(route_id),
+FOREIGN KEY(departing_id) REFERENCES cities(city_id),
+FOREIGN KEY(destination_id) REFERENCES cities(city_id)
+);
+
+CREATE TABLE ships(
+ship_id INT AUTO_INCREMENT,
+owner_id INT,
+route_id INT,
+name VARCHAR(50) NOT NULL,
+speed INT NOT NULL,
+PRIMARY KEY(ship_id),
+FOREIGN KEY(owner_id) REFERENCES owners(owner_id)
+);
