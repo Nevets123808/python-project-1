@@ -1,0 +1,56 @@
+Outline
+-------
+
+This project represents the (very) basic structure for a slow paced trading game.
+Users own Ships which they use to trade Items with Cities.
+Cities are connect by Routes, which Ships move along to travel between Cities. (the state of being in a City will be
+represented by a Route that starts and ends in the same city.)
+
+Our MVP is an app that will allow Users to check(read)/update the Ships they own, and command them to move between Cities.
+All Users will also be able to "buy"(create) new Ships.
+Special Admin Users will be allowed to create and update Cities and Routes.
+
+Extension possiblities:
+- Items - implement a system that allows Ships to contain Items and transfer them between Cities
+- Trading - allow Items and Ships to be bought and sold for (in-game) money, Cities have different prices
+- Login Credentials - In the MVP implementation there is no "log in" form, could provide password protection
+
+Future extension possibilities
+- price fluctuation - When the user buys/sells an Item the price in that City should change mimicing supply/demand economics
+- AI traders
+- Item demand at Cities - Cities need Items to function, Cities have their own stocks of items, which change based on City
+
+---MVP---
+Models:
+
+We need a flask model for every table required for the mvp:
+- Users
+- Ships
+- Cities
+- Routes
+
+Routes:
+
+We need to create routes for all of the operations possible in the MVP implementation of the project
+
+We need user accessible routes for:
+-Select User/Sign in
+-Create new User/Sign up
+-Delete User/Delete Account
+-Update User details
+-Check Ships
+-Create new Ship/Buy Ship
+-Update Ship Details
+-Change Ship's Route/Sail Ship to City
+
+we need admin only routes for:
+-Make User Admin
+-Create new City
+-Create new Route
+
+Forms:
+We need Flask Forms For:
+- User Details
+- Ship Details
+- City Details
+- Route Details?
