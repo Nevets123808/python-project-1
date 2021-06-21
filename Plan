@@ -39,14 +39,14 @@ We need user accessible routes for:
 -Delete User/Delete Account d
 -Update User details d
 -Check Ships d
--Create new Ship/Buy Ship 
+-Create new Ship/Buy Ship d
 -Update Ship Details d
 -Change Ship's Route/Sail Ship to City d
 
 we need admin only routes for:
--Make User Admin
--Create new City
--Create new Route
+-Make User Admin d
+-Create new City d
+-Create new Route d
 
 Forms:
 We need Flask Forms For:
