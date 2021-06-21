@@ -34,14 +34,14 @@ Routes:
 We need to create routes for all of the operations possible in the MVP implementation of the project
 
 We need user accessible routes for:
--Select User/Sign in
--Create new User/Sign up
--Delete User/Delete Account
--Update User details
--Check Ships
--Create new Ship/Buy Ship
--Update Ship Details
--Change Ship's Route/Sail Ship to City
+-Select User/Sign in d
+-Create new User/Sign up d
+-Delete User/Delete Account d
+-Update User details d
+-Check Ships d
+-Create new Ship/Buy Ship 
+-Update Ship Details d
+-Change Ship's Route/Sail Ship to City d
 
 we need admin only routes for:
 -Make User Admin
