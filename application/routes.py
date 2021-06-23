@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import MakeAdminForm, NewCityForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
+from application.forms import MakeAdminForm, NewCityForm, NewRouteForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
 
 @app.route('/')
 @app.route('/home')
@@ -141,6 +141,33 @@ def newcity():
         return redirect(url_for('admin'))
     return render_template('newcity.html', form = form)
 
-@app.route('/newroute')
-def newroute():
-    return "You have made a new route"
+@app.route('/admincitylist')
+def admincitylist():
+    cities = Cities.query.all()
+    return render_template('admincitylist.html', cities = cities)
+
+@app.route('/<int:city_id>/newroute', methods = ['GET','POST'])
+def newroute(city_id):
+    departing = Cities.query.get(city_id)
+    # This finds all the routes that depart from the city and creates a list of their ids
+    routes_from = Routes.query.filter_by(departing_id = departing.city_id).all()
+    destination_ids = [route.destination_id for route in routes_from]
+
+    # This then takes all the cities that are /not/ already destinations, and produces a list of their names
+    destinations = Cities.query.filter(Cities.city_id.not_in(destination_ids)).all()
+    destination_names = [city.city_name for city in destinations]
+    
+    form = NewRouteForm()
+    form.destination.choices = destination_names
+    if form.validate_on_submit():
+        destination = Cities.query.filter_by(city_name = form.destination.data).first()
+        route = Routes(departing_id = departing.city_id, destination_id = destination.city_id, length = form.length.data)
+        #Create a route back at the same time, so routes aren't one-way
+        route_back = Routes(departing_id = destination.city_id, destination_id = departing.city_id, length = form.length.data)
+        db.session.add(route)
+        db.session.commit()
+        #add and commit separately, is there a better way?
+        db.session.add(route_back)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    return render_template('newroute.html', form=form, city= departing.city_name)

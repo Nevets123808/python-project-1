@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
+from wtforms.fields.core import IntegerField
 from wtforms.validators import data_required
 
 from application import db
@@ -33,3 +34,8 @@ class MakeAdminForm(FlaskForm):
 class NewCityForm(FlaskForm):
     name = StringField("Name: ", validators=[data_required()])
     submit = SubmitField("Found City")
+
+class NewRouteForm(FlaskForm):
+    destination = SelectField("Destination: ", choices=[])
+    length = IntegerField("Length: ")
+    submit = SubmitField("Create Route")

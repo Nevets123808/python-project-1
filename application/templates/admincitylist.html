@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+<h1> Choose City For Route To Depart From</h1>
+    <table>
+        <tr>
+            <td>City Name</td>
+            <td></td>
+        </tr>
+        {% for city in cities %}
+            <tr>
+                <td>{{city.city_name}}</td>
+                <td><a href="{{url_for('newroute', city_id = city.city_id)}}">New Route</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock body_content %}
