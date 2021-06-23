@@ -1,10 +1,12 @@
-from flask import redirect, request, url_for
+from flask import redirect, request, url_for, render_template
 from application import app, db
+from application.models import *
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return "This is the home page"
+    users = Users.query.all()
+    return render_template('home.html', users=users)
 
 @app.route('/selectuser/<int:user_id>')
 def selectuser(user_id):

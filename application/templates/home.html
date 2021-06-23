@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+    <table>
+        {% if users|length>0 %}        
+            {%for user in users %}
+            <tr>
+                <td><a href="{{url_for('shiplist', user_id=user.user_id)}}">{{user.name}}</a></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        <tr><td><a href="{{url_for('newuser')}}">Create a new user</a></td></tr>
+    </table>
+    
+{% endblock body_content %}
