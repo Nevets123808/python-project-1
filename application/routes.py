@@ -103,11 +103,11 @@ def deleteship(user_id, ship_id):
     return redirect(url_for('shiplist', user_id = user_id))
 @app.route('/admin')
 def admin():
-    return "This route will have the options reserved for admin"
+    return render_template('admin.html')
 
-@app.route('/makeadmin/<int:user_id>')
-def makeadmin(user_id):
-    return f"User {user_id} is now an admin"
+@app.route('/makeadmin')
+def makeadmin():
+    return f"Make user an admin"
 
 @app.route('/newcity')
 def newcity():

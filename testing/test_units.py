@@ -100,10 +100,10 @@ class TestRoutes(TestBase):
 
     def test_admin(self):
         response = self.client.get(url_for('admin'))
-        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Admin Options', response.data)
     
     def test_make_admin(self):
-        response = self.client.get(url_for('makeadmin', user_id = 1))
+        response = self.client.get(url_for('makeadmin'))
         self.assertEqual(response.status_code, 200)
     
     def test_new_city(self):
