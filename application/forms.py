@@ -25,9 +25,9 @@ class UpdateShipForm(FlaskForm):
     submit = SubmitField("Rename Ship")
 
 class MakeAdminForm(FlaskForm):
-    users = Users.query.filter_by(admin = False).all()
-    usernames = [user.username for user in users]
-    user = SelectField("User: ", choices = usernames)
+    #We don't assign any choices, in case the db hasn't been set up
+    #We assing the choices before the form is used anyway
+    user = SelectField("User: ", choices = [])
     submit = SubmitField("Make Admin")
 
 class NewCityForm(FlaskForm):

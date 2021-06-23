@@ -108,8 +108,11 @@ class TestRoutes(TestBase):
         self.assertEqual(user.admin, True)
     
     def test_new_city(self):
-        response = self.client.get(url_for('newcity'))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(url_for('newcity'), data = dict(name="Newerton"))
+        city = Cities.query.filter_by(city_name = "Newerton").first()
+        self.assertEqual(city.city_name, "Newerton")
+        route = Routes.query.filter_by(departing_id = city.city_id).first()
+        self.assertIsNotNone(route)
     
     def test_new_route(self):
         response = self.client.get(url_for('newroute'))

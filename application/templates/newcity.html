@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+<h1> Found A New City </h1>
+    <form method = 'POST'>
+        {{ form.hidden_tag()}}
+        {{ form.name.label }} {{ form.name }}
+        <br>
+        {{ form.submit }}
+    </form>
+{% endblock body_content %}

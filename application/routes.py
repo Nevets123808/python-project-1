@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import MakeAdminForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
+from application.forms import MakeAdminForm, NewCityForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
 
 @app.route('/')
 @app.route('/home')
@@ -109,7 +109,7 @@ def admin():
 @app.route('/makeadmin', methods = ['GET','POST'])
 def makeadmin():
     form = MakeAdminForm()
-    
+
     # To allow dynamic options, we "rebuild" the user field of the MakeAdminForm
     # so the choices reflect the actual state of the db
     users = Users.query.filter_by(admin=False).all()
@@ -123,9 +123,23 @@ def makeadmin():
         return redirect(url_for('admin'))
     return render_template('makeadmin.html', form = form)
 
-@app.route('/newcity')
+@app.route('/newcity', methods = ['GET','POST'])
 def newcity():
-    return "You have made a new city"
+    form = NewCityForm()
+    if form.validate_on_submit():
+        print("hello!")
+        city = Cities(city_name=form.name.data)
+        db.session.add(city)
+        db.session.commit()
+
+        #We also need the route representing the cities port
+        city = Cities.query.filter_by(city_name = form.name.data).first()
+        route = Routes(departing_id = city.city_id, destination_id = city.city_id, length = 0)
+        db.session.add(route)
+        db.session.commit()
+
+        return redirect(url_for('admin'))
+    return render_template('newcity.html', form = form)
 
 @app.route('/newroute')
 def newroute():
