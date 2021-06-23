@@ -56,7 +56,9 @@ def shiplist(user_id):
 
 @app.route('/<int:user_id>/ship/<int:ship_id>')
 def ship(user_id, ship_id):
-    return f"This is the ship with id {ship_id}"
+    ship = Ships.query.get(ship_id)
+    city = None
+    return render_template('ship.html', user_id = user_id, ship = ship, city = city)
 
 @app.route('/<int:user_id>/newship', methods = ['GET','POST'])
 def newship(user_id):
@@ -86,6 +88,12 @@ def sail(user_id, ship_id, route_id):
 def shipdetails(user_id, ship_id):
     return f"Here you will be able to change the ship details."
 
+@app.route('/<int:user_id>/<int:ship_id>/deleteship')
+def deleteship(user_id, ship_id):
+    ship_to_delete = Ships.query.get(ship_id)
+    db.session.delete(ship_to_delete)
+    db.session.commit()
+    return redirect(url_for('shiplist', user_id = user_id))
 @app.route('/admin')
 def admin():
     return "This route will have the options reserved for admin"

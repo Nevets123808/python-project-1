@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+<h1>{{ship.ship_name}}</h1>
+{% if city != None %}
+    <p>{{ship.ship_name}} is currently in {{city}}.</p>
+    <p> Trade with City </p>
+    <p> <a href="{{url_for('sail', user_id = user_id, ship_id = ship.ship_id, route_id =1)}}">Sail on</a></p>
+{% endif %}
+<br>
+<a href="{{url_for('shipdetails', user_id = user_id, ship_id= ship.ship_id)}}">Rename {{ship.ship_name}}</a>
+<br>
+<a href="{{url_for('deleteship', user_id = user_id, ship_id = ship.ship_id)}}">Delete {{ship.ship_name}}</a>
+{% endblock body_content %}
+

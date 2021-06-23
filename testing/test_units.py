@@ -72,7 +72,7 @@ class TestRoutes(TestBase):
         user = Users.query.first()
         ship = Ships.query.filter_by(owner_id=user.user_id).first()
         response = self.client.get(url_for('ship', user_id = user.user_id, ship_id= ship.ship_id))
-        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'NewShip', response.data)
     
     def test_new_ship(self):
         user= Users.query.first()
@@ -92,6 +92,12 @@ class TestRoutes(TestBase):
         response = self.client.get(url_for('shipdetails', user_id = user.user_id, ship_id = ship.ship_id))
         self.assertEqual(response.status_code, 200)
     
+    def test_delete_ship(self):
+        user = Users.query.first()
+        ship = Ships.query.filter_by(owner_id = user.user_id).first()
+        response = self.client.get(url_for('deleteship', user_id = user.user_id, ship_id = ship.ship_id))
+        self.assertNotIn(b'NewShip', response.data)
+
     def test_admin(self):
         response = self.client.get(url_for('admin'))
         self.assertEqual(response.status_code, 200)
