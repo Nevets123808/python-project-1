@@ -1,6 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
-from application.models import *
+from application.models import Users, Cities, Ships, Routes
+from application.forms import NewUserForm
 
 @app.route('/')
 @app.route('/home')
@@ -12,9 +13,17 @@ def home():
 def selectuser(user_id):
     return f"You are now using user {user_id}"
 
-@app.route('/newuser')
+@app.route('/newuser', methods = ['GET','POST'])
 def newuser():
-    return "Create a new user"
+    form = NewUserForm()
+    if form.validate_on_submit():
+        username = form.name.data
+        email =form.email.data
+        newuser = Users(username=username,email=email)
+        db.session.add(newuser)
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template('newuser.html', form = form)
 
 @app.route('/deleteuser/<int:user_id>')
 def deleteuser(user_id):

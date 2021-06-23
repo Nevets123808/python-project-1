@@ -33,6 +33,7 @@ class TestRoutes(TestBase):
     def test_home_get(self):
         response = self.client.get(url_for('home'))
         self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Create a new user", response.data)
     
     def test_select_user(self):
         response = self.client.get(url_for('selectuser', user_id = 1))
