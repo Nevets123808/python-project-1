@@ -27,7 +27,10 @@ def newuser():
 
 @app.route('/deleteuser/<int:user_id>')
 def deleteuser(user_id):
-    return f"Deleted user {user_id}"
+    user_to_delete = Users.query.get(user_id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 @app.route('/userdetails/<int:user_id>')
 def userdetails(user_id):

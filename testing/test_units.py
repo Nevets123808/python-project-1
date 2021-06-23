@@ -18,6 +18,9 @@ class TestBase(TestCase):
         """
         #Create table
         db.create_all()
+        user = Users(username = "NewUser", email = "test@testing.com")
+        db.session.add(user)
+        db.session.commit()
 
         #Add test records here
 
@@ -41,11 +44,12 @@ class TestRoutes(TestBase):
 
     def test_new_user(self):
         response = self.client.get(url_for('newuser'))
-        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Please enter user details', response.data)
 
     def test_delete_user(self):
-        response = self.client.get(url_for('deleteuser', user_id = 1))
-        self.assertEqual(response.status_code, 200)
+        user = Users.query.first()
+        response = self.client.get(url_for('deleteuser', user_id = user.user_id), follow_redirects = True)
+        self.assertNotIn(b"NewUser", response.data)
     
     def test_user_details(self):
         response = self.client.get(url_for('userdetails', user_id = 1))

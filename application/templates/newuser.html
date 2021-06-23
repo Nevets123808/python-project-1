@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block body_content %}
+    <p> Please enter user details </p>
     <form method ='POST'>
         {{form.hidden_tag()}}
         {{form.name.label}} {{form.name}}
