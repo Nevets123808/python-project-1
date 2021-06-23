@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import NewUserForm, UpdateUserForm, NewShipForm
+from application.forms import NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
 
 @app.route('/')
 @app.route('/home')
@@ -9,9 +9,9 @@ def home():
     users = Users.query.all()
     return render_template('home.html', users=users)
 
-@app.route('/selectuser/<int:user_id>')
-def selectuser(user_id):
-    return f"You are now using user {user_id}"
+# @app.route('/selectuser/<int:user_id>')
+# def selectuser(user_id):
+#     return f"You are now using user {user_id}"
 
 @app.route('/newuser', methods = ['GET','POST'])
 def newuser():
@@ -84,9 +84,16 @@ def newship(user_id):
 def sail(user_id, ship_id, route_id):
     return f"Ship {ship_id} is now sailing on route {route_id}"
 
-@app.route('/<int:user_id>/<int:ship_id>/shipdetails')
+@app.route('/<int:user_id>/<int:ship_id>/shipdetails', methods = ['GET','POST'])
 def shipdetails(user_id, ship_id):
-    return f"Here you will be able to change the ship details."
+    form = UpdateShipForm()
+    ship = Ships.query.get(ship_id)
+    if form.validate_on_submit():
+        if form.name.data:
+            ship.ship_name = form.name.data
+            db.session.commit()
+        return redirect(url_for('ship', user_id = user_id, ship_id = ship.ship_id))
+    return render_template('updateship.html', form = form, ship = ship)
 
 @app.route('/<int:user_id>/<int:ship_id>/deleteship')
 def deleteship(user_id, ship_id):

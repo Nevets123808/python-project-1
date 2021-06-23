@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+    <p> Please enter a new name for {{ship.ship_name}}. </p>
+    <form method ='POST'>
+        {{form.hidden_tag()}}
+        {{form.name.label}} {{form.name}}
+        <br>
+        {{form.submit}}
+    </form>
+{% endblock body_content %}

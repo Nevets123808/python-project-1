@@ -16,3 +16,7 @@ class NewShipForm(FlaskForm):
     name = StringField("Name: ", validators=[data_required()])
     type = SelectField("Ship Type: ", choices = ['Fast', 'Medium', 'Slow'])
     submit = SubmitField("Buy Ship")
+
+class UpdateShipForm(FlaskForm):
+    name = StringField("name: ")
+    submit = SubmitField("Rename Ship")
