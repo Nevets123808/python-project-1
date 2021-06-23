@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+<h1>{{user.name}}'s Ships</h1>
+    <form method='POST'>
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name }}
+        {{ form.type.label }} {{ form.type }}
+        <p>Types:
+            <ul>
+                <li>Fast: faster, cheap, little cargo space</li>
+                <li>Medium: Average all rounder</li>
+                <li>Slow: Slow, expensive, huge cargo</li>
+            </ul>
+        {{ form.submit }}
+        </p>
+    </form>
+{% endblock body_content %}

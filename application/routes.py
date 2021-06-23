@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import NewUserForm, UpdateUserForm
+from application.forms import NewUserForm, UpdateUserForm, NewShipForm
 
 @app.route('/')
 @app.route('/home')
@@ -50,16 +50,33 @@ def userdetails(user_id):
 
 @app.route('/<int:user_id>/shiplist')
 def shiplist(user_id):
-    ships = Ships.query.all()
-    return render_template('shiplist.html',user_id = user_id, ships = ships)
+    user = Users.query.get(user_id)
+    ships = Ships.query.filter_by(owner_id = user_id).all()
+    return render_template('shiplist.html', user = user, ships = ships)
 
 @app.route('/<int:user_id>/ship/<int:ship_id>')
 def ship(user_id, ship_id):
     return f"This is the ship with id {ship_id}"
 
-@app.route('/<int:user_id>/newship')
+@app.route('/<int:user_id>/newship', methods = ['GET','POST'])
 def newship(user_id):
-    return "You have created a new ship!"
+    user = Users.query.get(user_id)
+    form = NewShipForm()
+    if form.validate_on_submit():
+        shipname = form.name.data
+        type = form.type.data
+        #Might seem a strange order, but forces "Medium" as default
+        if type == 'Fast':
+            speed = 3
+        elif type == 'Slow':
+            speed = 1
+        else:
+            speed = 2
+        newship = Ships(ship_name = shipname, speed = speed, owner_id = user_id)
+        db.session.add(newship)
+        db.session.commit()
+        return redirect(url_for('shiplist', user_id = user_id))
+    return render_template('newship.html', form = form)
 
 @app.route('/<int:user_id>/<int:ship_id>/sail/<int:route_id>')
 def sail(user_id, ship_id, route_id):

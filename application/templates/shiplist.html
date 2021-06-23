@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block body_content %}
+<h1>{{user.username}}'s Ships</h1>
     {% if (ships|length) > 0 %}
         <table>
             <tr>
@@ -9,7 +10,7 @@
             </tr>
             {% for ship in ships %}
                 <tr>
-                    <td><a href="{{url_for('ship', user_id = user_id, ship_id = ship.ship_id)}}">{{ship.ship_name}}</a></td>
+                    <td><a href="{{url_for('ship', user_id = user.user_id, ship_id = ship.ship_id)}}">{{ship.ship_name}}</a></td>
                     <td>{{ship.speed}}</td>
                     <td></td>
                 </tr>
@@ -17,5 +18,5 @@
         </table>
     {% endif %}
     <br>
-    <a href="{{url_for('newship', user_id = user_id)}}">Buy a ship</a>
+    <a href="{{url_for('newship', user_id = user.user_id)}}">Buy a ship</a>
 {% endblock body_content %}

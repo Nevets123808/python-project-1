@@ -76,8 +76,9 @@ class TestRoutes(TestBase):
     
     def test_new_ship(self):
         user= Users.query.first()
-        response = self.client.get(url_for('newship', user_id = user.user_id))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(url_for('newship', user_id = user.user_id), data = dict(name="NewerShip", type='Fast'), follow_redirects = True)
+        ships = Ships.query.filter_by(owner_id=user.user_id).all()
+        self.assertEqual(len(ships), 2)
 
     def test_sail(self):
         user = Users.query.first()
