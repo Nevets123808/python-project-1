@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+    Choose a user to make admin:
+    <form method = 'POST'>
+        {{form.hidden_tag()}}
+        {{form.user.label}} {{form.user}}
+        <br>
+        {{form.submit}}
+    </form>
+{% endblock body_content %}

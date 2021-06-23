@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
+from application.forms import MakeAdminForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
 
 @app.route('/')
 @app.route('/home')
@@ -101,13 +101,27 @@ def deleteship(user_id, ship_id):
     db.session.delete(ship_to_delete)
     db.session.commit()
     return redirect(url_for('shiplist', user_id = user_id))
+
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
 
-@app.route('/makeadmin')
+@app.route('/makeadmin', methods = ['GET','POST'])
 def makeadmin():
-    return f"Make user an admin"
+    form = MakeAdminForm()
+    
+    # To allow dynamic options, we "rebuild" the user field of the MakeAdminForm
+    # so the choices reflect the actual state of the db
+    users = Users.query.filter_by(admin=False).all()
+    usernames = [user.username for user in users]
+    form.user.choices = usernames
+
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = form.user.data).first()
+        user.admin = True
+        db.session.commit()
+        return redirect(url_for('admin'))
+    return render_template('makeadmin.html', form = form)
 
 @app.route('/newcity')
 def newcity():

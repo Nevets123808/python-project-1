@@ -2,6 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import data_required
 
+from application import db
+from application.models import Users
+
 class NewUserForm(FlaskForm):
     name = StringField("Username: ", validators=[data_required()])
     email = StringField("Email address: ", validators=[data_required()])
@@ -20,3 +23,13 @@ class NewShipForm(FlaskForm):
 class UpdateShipForm(FlaskForm):
     name = StringField("name: ")
     submit = SubmitField("Rename Ship")
+
+class MakeAdminForm(FlaskForm):
+    users = Users.query.filter_by(admin = False).all()
+    usernames = [user.username for user in users]
+    user = SelectField("User: ", choices = usernames)
+    submit = SubmitField("Make Admin")
+
+class NewCityForm(FlaskForm):
+    name = StringField("Name: ", validators=[data_required()])
+    submit = SubmitField("Found City")
