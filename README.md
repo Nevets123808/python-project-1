@@ -21,7 +21,7 @@ Special Admin Users will be allowed to create and update Cities and Routes.
 
 Below is diagram showing the proposed ERD for this project, as well as the "actions" a User will be able to make with their ship. These do not include "book keeping" actions such as renaming ships, or changing user details.
 
-![Imgur](https://i.imgur.com/ar0lEn.png)
+![Imgur](https://i.imgur.com/ar0lEnb.png)
 
 The diagram is split into two sections, the main section is what I want to complete for this project. The section marked "Additional" represents proposed additions to the project for added functionality.
 
