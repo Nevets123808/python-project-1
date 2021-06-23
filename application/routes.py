@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import NewUserForm
+from application.forms import NewUserForm, UpdateUserForm
 
 @app.route('/')
 @app.route('/home')
@@ -32,28 +32,41 @@ def deleteuser(user_id):
     db.session.commit()
     return redirect(url_for('home'))
 
-@app.route('/userdetails/<int:user_id>')
+@app.route('/userdetails/<int:user_id>', methods =['GET','POST'])
 def userdetails(user_id):
-    return "Change user Details"
+    form = UpdateUserForm()
+    user = Users.query.get(user_id)
+    if form.validate_on_submit():
+        username = form.name.data
+        email = form.email.data
+        #If there is nothing in the form field, don't update
+        if username:
+            user.username = username
+        if email:
+            user.email=email
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template('updateuser.html', form = form)
 
-@app.route('/shiplist/<int:user_id>')
+@app.route('/<int:user_id>/shiplist')
 def shiplist(user_id):
-    return f"this is the ship list for the player with id {user_id}"
+    ships = Ships.query.all()
+    return render_template('shiplist.html',user_id = user_id, ships = ships)
 
-@app.route('/ship/<int:ship_id>')
-def ship(ship_id):
+@app.route('/<int:user_id>/ship/<int:ship_id>')
+def ship(user_id, ship_id):
     return f"This is the ship with id {ship_id}"
 
-@app.route('/newship')
-def newship():
+@app.route('/<int:user_id>/newship')
+def newship(user_id):
     return "You have created a new ship!"
 
-@app.route('/sail/<int:ship_id>/<int:route_id>')
-def sail(ship_id, route_id):
+@app.route('/<int:user_id>/<int:ship_id>/sail/<int:route_id>')
+def sail(user_id, ship_id, route_id):
     return f"Ship {ship_id} is now sailing on route {route_id}"
 
-@app.route('/shipdetails/<int:ship_id>')
-def shipdetails(ship_id):
+@app.route('/<int:user_id>/<int:ship_id>/shipdetails')
+def shipdetails(user_id, ship_id):
     return f"Here you will be able to change the ship details."
 
 @app.route('/admin')

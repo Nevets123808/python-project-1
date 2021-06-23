@@ -18,11 +18,18 @@ class TestBase(TestCase):
         """
         #Create table
         db.create_all()
+
+        #Add test records here
         user = Users(username = "NewUser", email = "test@testing.com")
         db.session.add(user)
         db.session.commit()
 
-        #Add test records here
+        user = Users.query.first()
+        ship = Ships(ship_name = "NewShip", speed = 1, owner_id = user.user_id)
+        db.session.add(ship)
+        db.session.commit()
+
+        
 
     def tearDown(self):
         """
@@ -52,27 +59,36 @@ class TestRoutes(TestBase):
         self.assertNotIn(b"NewUser", response.data)
     
     def test_user_details(self):
-        response = self.client.get(url_for('userdetails', user_id = 1))
-        self.assertEqual(response.status_code, 200)
+        user = Users.query.first()
+        response = self.client.post(url_for('userdetails', user_id = user.user_id), data = dict(name="Newer User",email=None), follow_redirects = True)
+        self.assertIn(b"Newer User", response.data)
     
     def test_shiplist(self):
-        response = self.client.get(url_for('shiplist', user_id = 1))
-        self.assertEqual(response.status_code, 200)
+        user = Users.query.first()
+        response = self.client.get(url_for('shiplist', user_id = user.user_id))
+        self.assertIn(b"NewShip", response.data)
     
     def test_ship(self):
-        response = self.client.get(url_for('ship', ship_id = 1))
+        user = Users.query.first()
+        ship = Ships.query.filter_by(owner_id=user.user_id).first()
+        response = self.client.get(url_for('ship', user_id = user.user_id, ship_id= ship.ship_id))
         self.assertEqual(response.status_code, 200)
     
     def test_new_ship(self):
-        response = self.client.get(url_for('newship'))
+        user= Users.query.first()
+        response = self.client.get(url_for('newship', user_id = user.user_id))
         self.assertEqual(response.status_code, 200)
 
     def test_sail(self):
-        response = self.client.get(url_for('sail', ship_id = 1, route_id = 1))
+        user = Users.query.first()
+        ship = Ships.query.filter_by(owner_id = user.user_id).first()
+        response = self.client.get(url_for('sail', user_id = user.user_id, ship_id = ship.ship_id, route_id = 1))
         self.assertEqual(response.status_code, 200)
 
     def test_ship_details(self):
-        response = self.client.get(url_for('shipdetails', ship_id = 1))
+        user = Users.query.first()
+        ship = Ships.query.filter_by(owner_id= user.user_id).first()
+        response = self.client.get(url_for('shipdetails', user_id = user.user_id, ship_id = ship.ship_id))
         self.assertEqual(response.status_code, 200)
     
     def test_admin(self):

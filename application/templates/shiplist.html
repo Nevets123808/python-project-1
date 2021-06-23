@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+    {% if (ships|length) > 0 %}
+        <table>
+            <tr>
+                <td>Ship Name</td>
+                <td>Speed</td>
+                <td>Current Destination</td>
+            </tr>
+            {% for ship in ships %}
+                <tr>
+                    <td><a href="{{url_for('ship', user_id = user_id, ship_id = ship.ship_id)}}">{{ship.ship_name}}</a></td>
+                    <td>{{ship.speed}}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    <br>
+    <a href="{{url_for('newship', user_id = user_id)}}">Buy a ship</a>
+{% endblock body_content %}
