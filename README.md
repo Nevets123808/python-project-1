@@ -31,3 +31,17 @@ The project has been risk assessed and appropriate mitigations have been impleme
 **PLACE HOLDER FOR RISK ASSESSMENT IMAGE**
 
 ### Project management
+
+To manage this project, I made use of a Trello kanban board to track tasks that I needed to complete, as shown below
+**PLACE HOLDER FOR TRELLOBOARD IMAGE**
+
+## Stage 1: Users own ships
+
+The first step of the project was to create two tables, Users and Ships, as well as routes and forms as necessary to allow users of the app to create a User, update the details of a User and delete Users, as well as create Ships, rename Ships and delete Ships.
+
+App structure:
+**PLACE HOLDER FOR STAGE1**
+
+
+
+

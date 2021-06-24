@@ -218,6 +218,7 @@ def endturn():
             destination_city_id = current_route.destination_id
             destination_route = Routes.query.filter_by(departing_id = destination_city_id, destination_id = destination_city_id).first()
             ship.route_id = destination_route.route_id
+            ship.dist = 0
         db.session.commit()
     return redirect(url_for('home'))
         
