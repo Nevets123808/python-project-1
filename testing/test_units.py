@@ -48,11 +48,13 @@ class TestBase(TestCase):
         db.session.add_all([route1, route2, route3, route12, route21])
         db.session.commit()
         
-        #one test ship after all the routes so it has a route to sit on
+        #two test ships after all the routes so it has a route to sit on, one in city, one sailing
         user = Users.query.first()
         route = Routes.query.filter_by(departing_id=city1.city_id, destination_id=city1.city_id).first()
+        sail_route = Routes.query.filter_by(departing_id=city1.city_id, destination_id=city2.city_id).first()
         ship = Ships(ship_name = "NewShip", speed = 1, owner_id = user.user_id, route_id = route.route_id)
-        db.session.add(ship)
+        sailing = Ships(ship_name = "Sailing", speed = 3, owner_id = user.user_id, route_id = sail_route.route_id)
+        db.session.add_all([ship, sailing])
         db.session.commit()
 
     def tearDown(self):
@@ -100,15 +102,28 @@ class TestRoutes(TestBase):
     
     def test_new_ship(self):
         user= Users.query.first()
+        num_ships = len(Ships.query.filter_by(owner_id=user.user_id).all())
         response = self.client.post(url_for('newship', user_id = user.user_id), data = dict(name="NewerShip", type='Fast', city = 'TestCity1'), follow_redirects = True)
         ships = Ships.query.filter_by(owner_id=user.user_id).all()
-        self.assertEqual(len(ships), 2)
+        self.assertEqual(len(ships), num_ships+1)
 
-    def test_sail(self):
+    def test_sail_in_sailing(self):
         user = Users.query.first()
-        ship = Ships.query.filter_by(owner_id = user.user_id).first()
-        response = self.client.get(url_for('sail', user_id = user.user_id, ship_id = ship.ship_id, route_id = 1))
-        self.assertEqual(response.status_code, 200)
+        ship = Ships.query.filter_by(ship_name="Sailing").first()
+        response = self.client.get(url_for('sail', user_id = user.user_id, ship_id = ship.ship_id))
+        self.assertIn(b"is currently on the way to", response.data)
+
+    def test_sail_in_city(self):
+        user = Users.query.first()
+        ship = Ships.query.filter_by(ship_name="NewShip").first()
+        response = self.client.get(url_for('sail', user_id = user.user_id, ship_id = ship.ship_id))
+        self.assertIn(b"is currently docked in", response.data)
+    
+    def test_set_sail(self):
+        user = Users.query.first()
+        ship = Ships.query.filter_by(ship_name="NewShip").first()
+        response = self.client.post(url_for('sail', user_id = user.user_id, ship_id = ship.ship_id), data = dict(destination = 'TestCity2'), follow_redirects=True)
+        self.assertIn(b"is currently on the way to", response.data)
 
     def test_ship_details(self):
         user = Users.query.first()
@@ -125,6 +140,10 @@ class TestRoutes(TestBase):
     def test_admin(self):
         response = self.client.get(url_for('admin'))
         self.assertIn(b'Admin Options', response.data)
+    
+    def tet_admin_city_list(self):
+        response = self.client.get(url_for('admincitylist'))
+        self.assertIn(b"TestCity3", response.data)
     
     def test_make_admin(self):
         response = self.client.post(url_for('makeadmin'), data = dict(user = 'NewUser'))
@@ -144,3 +163,8 @@ class TestRoutes(TestBase):
         response = self.client.post(url_for('newroute', city_id = city1.city_id), data=dict(destination = city3.city_name, length =10))
         route = Routes.query.filter_by(departing_id = city3.city_id, destination_id = city1.city_id,).first()
         self.assertEqual(route.length, 10)
+    
+    def test_end_turn(self):
+        ship = Ships.query.filter_by(ship_name = "Sailing").first()
+        response = self.client.get(url_for('endturn'))
+        self.assertEqual(ship.dist, ship.speed)
