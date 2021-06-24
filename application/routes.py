@@ -164,10 +164,8 @@ def newroute(city_id):
         route = Routes(departing_id = departing.city_id, destination_id = destination.city_id, length = form.length.data)
         #Create a route back at the same time, so routes aren't one-way
         route_back = Routes(departing_id = destination.city_id, destination_id = departing.city_id, length = form.length.data)
-        db.session.add(route)
+        db.session.add_all([route,route_back])
         db.session.commit()
-        #add and commit separately, is there a better way?
-        db.session.add(route_back)
-        db.session.commit()
+        
         return redirect(url_for('admin'))
     return render_template('newroute.html', form=form, city= departing.city_name)

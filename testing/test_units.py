@@ -10,6 +10,7 @@ class TestBase(TestCase):
             DEBUG=True,
             WTF_CSRF_ENABLED=False
             )
+        db.drop_all()
         return app
     
     def setUp(self):
@@ -20,15 +21,38 @@ class TestBase(TestCase):
         db.create_all()
 
         #Add test records here
+        #one test user
         user = Users(username = "NewUser", email = "test@testing.com")
         db.session.add(user)
         db.session.commit()
 
+        #one test ship
         user = Users.query.first()
         ship = Ships(ship_name = "NewShip", speed = 1, owner_id = user.user_id)
         db.session.add(ship)
         db.session.commit()
 
+        #three test cities
+        city1 = Cities(city_name = "TestCity1")
+        city2 = Cities(city_name = "TestCity2")
+        city3 = Cities(city_name = "TestCity3")
+
+        db.session.add_all([city1,city2,city3])
+        db.session.commit()
+
+        city1 = Cities.query.filter_by(city_name="TestCity1").first()
+        city2 = Cities.query.filter_by(city_name="TestCity2").first()
+        city3 = Cities.query.filter_by(city_name="TestCity3").first()
+
+        #Test route for each city and between city1 and city2 (there and back again)
+        route1 = Routes(departing_id = city1.city_id, destination_id = city1.city_id, length = 0)
+        route2 = Routes(departing_id = city2.city_id, destination_id = city2.city_id, length = 0)
+        route3 = Routes(departing_id = city3.city_id, destination_id = city3.city_id, length = 0)
+        route12 = Routes(departing_id = city1.city_id, destination_id = city2.city_id, length = 10)
+        route21 = Routes(departing_id = city2.city_id, destination_id = city1.city_id, length = 10)
+
+        db.session.add_all([route1, route2, route3, route12, route21])
+        db.session.commit()
         
 
     def tearDown(self):
@@ -115,5 +139,8 @@ class TestRoutes(TestBase):
         self.assertIsNotNone(route)
     
     def test_new_route(self):
-        response = self.client.get(url_for('newroute'))
-        self.assertEqual(response.status_code, 200)
+        city1 = Cities.query.filter_by(city_name="TestCity1").first()
+        city3 = Cities.query.filter_by(city_name="TestCity3").first()
+        response = self.client.post(url_for('newroute', city_id = city1.city_id), data=dict(destination = city3.city_name, length =10))
+        route = Routes.query.filter_by(departing_id = city3.city_id, destination_id = city1.city_id,).first()
+        self.assertEqual(route.length, 10)
