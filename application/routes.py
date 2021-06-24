@@ -203,3 +203,21 @@ def newroute(city_id):
         
         return redirect(url_for('admin'))
     return render_template('newroute.html', form=form, city= departing.city_name)
+
+@app.route("/endturn")
+def endturn():
+    #get id for all routes that represent cities (we want to ignore these)
+    city_routes = Routes.query.filter(Routes.departing_id==Routes.destination_id).all()
+    city_route_ids = [route.route_id for route in city_routes]
+    #get all ships which are not on city-routes, ie. those currently sailing
+    ships_sailing = Ships.query.filter(Ships.route_id.not_in(city_route_ids)).all()
+    for ship in ships_sailing:
+        current_route = Routes.query.get(ship.route_id)
+        ship.dist += ship.speed
+        if ship.dist >= current_route.length:
+            destination_city_id = current_route.destination_id
+            destination_route = Routes.query.filter_by(departing_id = destination_city_id, destination_id = destination_city_id).first()
+            ship.route_id = destination_route.route_id
+        db.session.commit()
+    return redirect(url_for('home'))
+        

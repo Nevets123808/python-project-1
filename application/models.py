@@ -23,6 +23,7 @@ class Ships(db.Model):
     speed = db.Column(db.Integer, nullable = False)
     owner_id = db.Column(db.Integer, db.ForeignKey(Users.user_id))
     route_id = db.Column(db.Integer, db.ForeignKey(Routes.route_id))
+    dist = db.Column(db.Integer, default = 0)
 
 
 
