@@ -106,6 +106,10 @@ def sail(user_id, ship_id):
         form.destination.choices=destination_names
         
         if form.validate_on_submit():
+            destination_city = Cities.query.filter_by(city_name = form.destination.data).first()
+            new_route = Routes.query.filter_by(departing_id = city.city_id, destination_id = destination_city.city_id).first()
+            ship.route_id = new_route.route_id
+            db.session.commit()
             return redirect(url_for('sail', user_id = user_id, ship_id = ship.ship_id))
         
         return render_template('setsail.html', form = form, city = city.city_name, ship = ship.ship_name)
