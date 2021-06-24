@@ -19,6 +19,7 @@ class UpdateUserForm(FlaskForm):
 class NewShipForm(FlaskForm):
     name = StringField("Name: ", validators=[data_required()])
     type = SelectField("Ship Type: ", choices = ['Fast', 'Medium', 'Slow'])
+    city = SelectField("City to build in: ", choices = [])
     submit = SubmitField("Buy Ship")
 
 class UpdateShipForm(FlaskForm):
@@ -39,3 +40,7 @@ class NewRouteForm(FlaskForm):
     destination = SelectField("Destination: ", choices=[])
     length = IntegerField("Length: ")
     submit = SubmitField("Create Route")
+
+class SailForm(FlaskForm):
+    destination = SelectField("Destination: ", choices = [])
+    submit = SubmitField("Set Sail!")

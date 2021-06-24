@@ -1,7 +1,7 @@
 from flask import redirect, request, url_for, render_template
 from application import app, db
 from application.models import Users, Cities, Ships, Routes
-from application.forms import MakeAdminForm, NewCityForm, NewRouteForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm
+from application.forms import MakeAdminForm, NewCityForm, NewRouteForm, NewUserForm, UpdateShipForm, UpdateUserForm, NewShipForm, SailForm
 
 @app.route('/')
 @app.route('/home')
@@ -64,6 +64,10 @@ def ship(user_id, ship_id):
 def newship(user_id):
     user = Users.query.get(user_id)
     form = NewShipForm()
+    #If we want to restrict where new ships are built, the logic would go here:
+    cities = Cities.query.all()
+    city_names = [city.city_name for city in cities]
+    form.city.choices = city_names
     if form.validate_on_submit():
         shipname = form.name.data
         type = form.type.data
@@ -74,15 +78,41 @@ def newship(user_id):
             speed = 1
         else:
             speed = 2
-        newship = Ships(ship_name = shipname, speed = speed, owner_id = user_id)
+        
+        #find the route corresponding to the city chosen:
+        city = Cities.query.filter_by(city_name= form.city.data).first()
+        route = Routes.query.filter_by(departing_id=city.city_id, destination_id=city.city_id).first()
+        newship = Ships(ship_name = shipname, speed = speed, owner_id = user_id, route_id=route.route_id)
         db.session.add(newship)
         db.session.commit()
         return redirect(url_for('shiplist', user_id = user_id))
     return render_template('newship.html', form = form)
 
-@app.route('/<int:user_id>/<int:ship_id>/sail/<int:route_id>')
-def sail(user_id, ship_id, route_id):
-    return f"Ship {ship_id} is now sailing on route {route_id}"
+@app.route('/<int:user_id>/<int:ship_id>/sail', methods = ['GET','POST'])
+def sail(user_id, ship_id):
+    ship = Ships.query.get(ship_id)
+    current_route = Routes.query.get(ship.route_id)
+    #A city's port is represented by a route with the same departing and destination, therefore if ship is on such a route it is in a city 
+    in_city = (current_route.departing_id == current_route.destination_id)
+    if in_city:
+        city = Cities.query.get(current_route.departing_id)
+        form = SailForm()
+
+        # Get the ids cities which have a route from the current city, but are not the current city, then get the names of theses cities
+        routes_from = Routes.query.filter_by(departing_id = city.city_id)
+        destination_ids = [route.destination_id for route in routes_from if route.destination_id != city.city_id]
+        destination_names = [Cities.query.get(destination_id).city_name for destination_id in destination_ids]
+
+        form.destination.choices=destination_names
+        
+        if form.validate_on_submit():
+            return redirect(url_for('sail', user_id = user_id, ship_id = ship.ship_id))
+        
+        return render_template('setsail.html', form = form, city = city.city_name, ship = ship.ship_name)
+
+    else:
+        destination = Cities.query.get(current_route.destination_id)
+        return render_template("sailing.html", ship_name = ship.ship_name, destination = destination.city_name)
 
 @app.route('/<int:user_id>/<int:ship_id>/shipdetails', methods = ['GET','POST'])
 def shipdetails(user_id, ship_id):

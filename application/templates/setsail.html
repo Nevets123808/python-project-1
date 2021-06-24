@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block body_content %}
+    <h1>Set Sail With {{ship}} </h1>
+    <p>{{ship}} is currently docked in {{city}}</p>
+    <form method = 'POST'>
+        {{form.hidden_tag()}}
+        {{ form.destination.label }} {{ form.destination}}
+        <br>
+        {{ form.submit }}
+    </form>
+{% endblock body_content %}

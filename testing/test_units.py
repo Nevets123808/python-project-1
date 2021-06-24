@@ -26,12 +26,6 @@ class TestBase(TestCase):
         db.session.add(user)
         db.session.commit()
 
-        #one test ship
-        user = Users.query.first()
-        ship = Ships(ship_name = "NewShip", speed = 1, owner_id = user.user_id)
-        db.session.add(ship)
-        db.session.commit()
-
         #three test cities
         city1 = Cities(city_name = "TestCity1")
         city2 = Cities(city_name = "TestCity2")
@@ -54,6 +48,12 @@ class TestBase(TestCase):
         db.session.add_all([route1, route2, route3, route12, route21])
         db.session.commit()
         
+        #one test ship after all the routes so it has a route to sit on
+        user = Users.query.first()
+        route = Routes.query.filter_by(departing_id=city1.city_id, destination_id=city1.city_id).first()
+        ship = Ships(ship_name = "NewShip", speed = 1, owner_id = user.user_id, route_id = route.route_id)
+        db.session.add(ship)
+        db.session.commit()
 
     def tearDown(self):
         """
@@ -100,7 +100,7 @@ class TestRoutes(TestBase):
     
     def test_new_ship(self):
         user= Users.query.first()
-        response = self.client.post(url_for('newship', user_id = user.user_id), data = dict(name="NewerShip", type='Fast'), follow_redirects = True)
+        response = self.client.post(url_for('newship', user_id = user.user_id), data = dict(name="NewerShip", type='Fast', city = 'TestCity1'), follow_redirects = True)
         ships = Ships.query.filter_by(owner_id=user.user_id).all()
         self.assertEqual(len(ships), 2)
 
