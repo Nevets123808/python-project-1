@@ -8,8 +8,8 @@ class Users(db.Model):
     admin =db.Column(db.Boolean, default = False)
 
 class Cities(db.Model):
-    city_id = db.Column(db.Integer, primary_key = True, unique = True)
-    city_name = db.Column(db.String(50), nullable = False)
+    city_id = db.Column(db.Integer, primary_key = True)
+    city_name = db.Column(db.String(50), nullable = False, unique = True)
 
 class Routes(db.Model):
     route_id = db.Column(db.Integer, primary_key = True)
@@ -19,7 +19,7 @@ class Routes(db.Model):
 
 class Ships(db.Model):
     ship_id = db.Column(db.Integer, primary_key = True)
-    ship_name = db.Column(db.String(50), nullable = False, unique=True)
+    ship_name = db.Column(db.String(50), nullable = False, unique = True)
     speed = db.Column(db.Integer, nullable = False)
     owner_id = db.Column(db.Integer, db.ForeignKey(Users.user_id))
     route_id = db.Column(db.Integer, db.ForeignKey(Routes.route_id))
