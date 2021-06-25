@@ -61,10 +61,12 @@ Before each stage of development could be considered "complete," comprehensive u
 
 ### User Operation
 
+When you starts using the app, you will be greeted by a list of other Users and a "Create a new eser" option. Following this link takes you to a form where you can enter a username and email address to create your user. With this done, you can now click you username in the list, where you will be taken to your ship list. Alternatively there are options to update your details or delete your account (WARNING deleting your account is done without confirmation)
 
+From your ship list, you can either select a ship, or build a new one. Building a new ship simply requires naming it, choosing a type, fast, medium or slow and choosing a city to build it in.
 
-
-
-
-
-
+If you select a ship, you are given options for renaming the ship or deleting it. Most importantly is the option to "Sail" this will allow you to move your ship to a different city, provided there is a route between them.
+![Imgur](https://i.imgur.com/VWEUDFa.png)
+![Imgur](https://i.imgur.com/rnmLH9e.png)
+![Imgur](https://i.imgur.com/bxw6t78.png)
+![Imgur](https://i.imgur.com/K6QoAaM.png)
