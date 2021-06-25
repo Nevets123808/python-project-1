@@ -76,8 +76,8 @@ class TestRoutes(TestBase):
     #     self.assertEqual(response.status_code, 200)
 
     def test_new_user(self):
-        response = self.client.get(url_for('newuser'))
-        self.assertIn(b'Please enter user details', response.data)
+        response = self.client.post(url_for('newuser'), data = dict(name = "Newer User",email="new@newer.new"), follow_redirects=True)
+        self.assertIn(b"Newer User", response.data)
 
     def test_delete_user(self):
         user = Users.query.first()
@@ -166,5 +166,7 @@ class TestRoutes(TestBase):
     
     def test_end_turn(self):
         ship = Ships.query.filter_by(ship_name = "Sailing").first()
+        ship.dist = 9
+        db.session.commit()
         response = self.client.get(url_for('endturn'))
-        self.assertEqual(ship.dist, ship.speed)
+        self.assertEqual(ship.dist, 0)
