@@ -35,12 +35,35 @@ The project has been risk assessed and appropriate mitigations have been impleme
 To manage this project, I made use of a Trello kanban board to track tasks that I needed to complete, as shown below
 **PLACE HOLDER FOR TRELLOBOARD IMAGE**
 
-## Stage 1: Users own ships
+## Stages of Development
+### Stage 1: Users own ships
 
 The first step of the project was to create two tables, Users and Ships, as well as routes and forms as necessary to allow users of the app to create a User, update the details of a User and delete Users, as well as create Ships, rename Ships and delete Ships.
 
 App structure:
 **PLACE HOLDER FOR STAGE1**
+
+### Stage 2: Admin controls
+
+The second development stage invloved creating the infrastructure for the "game map," the Cities for trading in and the Routes for travelling between them. The structure of the new routes is shown below:
+
+**PLACE HOLDER STAGE2**
+
+### Stage 3: Ships on Routes
+
+Finally the functionality of the relationship between ships and routes was added, allowing the ships to move around the game map. Only one route was added for this stage, "/<ship_id>/sail" which either shows where the ship is sailing to, or allows the user to choose a new destination.
+
+## Testing
+
+Before each stage of development could be considered "complete," comprehensive unit testing was undertaken, each time building on the tests for earlier stages. In this way as new features were added, we could ensure the previous stages still worked correctly, and any errors that came up could be corrected. In this way a high level of coverage was reached at every stage, resulting in ~94% coverage of the final application. The missing 6% is made up of alternative cases of string assignment and rendering html templates, testing these is deemed obsolete owing to the fact that other tests cover their function.
+
+## Using the App
+
+### User Operation
+
+
+
+
 
 
 
