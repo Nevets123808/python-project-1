@@ -69,4 +69,8 @@ From your ship list, you can either select a ship, or build a new one. Building 
 
 If you select a ship, you are given options for renaming the ship or deleting it. Most importantly is the option to "Sail" this will allow you to move your ship to a different city, provided there is a route between them.
 
+## Bugs and Outstanding features
 
+- Items and Trading are not implemented.
+- User Friendly error-handling and validation for ensuring unique usernames, emails, etc needs doing.
+- Integeration testing using selenium to ensure the app is working as a single entity.
